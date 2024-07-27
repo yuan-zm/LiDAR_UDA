@@ -1,7 +1,7 @@
 
 # LiDAR_UDA
 
-This repo is focusing on **self-training-based methods** for 3D outdoor driving scenario UDA segmentation.
+This repo focuses on self-training-based methods for 3D outdoor driving scenario LiDAR point clouds UDA segmentation.
 
 Currently, this repo includes the implementation of [LaserMix](https://arxiv.org/abs/2207.00026) and [SAC-LM](https://openaccess.thecvf.com/content/CVPR2024/papers/Yuan_Density-guided_Translator_Boosts_Synthetic-to-Real_Unsupervised_Domain_Adaptive_Segmentation_of_3D_CVPR_2024_paper.pdf).
 
