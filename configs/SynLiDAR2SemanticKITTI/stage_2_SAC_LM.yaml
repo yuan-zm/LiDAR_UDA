@@ -1,0 +1,135 @@
+
+TRAIN:
+  TYPE: "train_parameters"
+  PROJECT_NAME: 'syn2sk_DGTST_XYZ_CAL_M34_LsG'
+  
+  # for transfer learning
+  MAX_ITERS: 100000
+  MAX_EPOCHS: 100000
+
+  PREHEAT_STEPS: 5000
+  T_VAL_ITER: 4000
+  S_VAL_ITER: 4000
+  SAVE_MORE_ITER: False
+  SAVE_ITER: 80000
+  LOG_PERIOD: 50
+  PRETRAINPATH: 'preTraModel/Syn2SK/5_PolarAugPcXYSht1e1_Sp_MT9e4Eval_OpNetPrwCALNm5KE5e2_advent_ym/09-29-16_08/checkpoint_val_target_Sp.tar'
+  RESUMEPATH: None
+  
+  EXP_NAME: "1K_PcanCh_Sac1e1_DGTXYShift1e1_CE_100Mt9e2_M34_Ps9_Adam25e4" # 
+  STAGE: "SACLM_Trainer"
+  GPU_ID: 1
+  DEBUG: True # False | True 
+  
+SOURCE_LOSS:
+  lambda_lov: 0. 
+
+TARGET_LOSS:
+  lambda_sac: 0.1 # sac  # cal kl(stu_raw_tgt | tea_aug_tgt)
+  
+PSEUDO_LABEL:
+  use_confidence: True # True | False 
+  threshold: 0.9
+
+MEAN_TEACHER:
+  TYPE: 'meanTeacher'
+  use_mt: True # 100Mt9e2
+  alpha_ema: 0.99
+  update_every: 100
+
+  round_period: 20000
+
+HYPERPARAMETER:
+  VOXEL_SIZE: 0.05
+
+#------ Network ------
+MODEL_G:
+  TYPE: "G"
+  MODEL_NAME: "MinkUNet34"
+  IN_CHANNELS: 3  # coords (xyz) and intensity
+  NUM_CLASSES: 20  # Number of valid classes
+
+OPTIMIZER:
+  TYPE: "Adam"
+  LEARNING_RATE_G: 2.5e-4  # max learning rate of G
+
+#------ dataset ------
+DATASET_SOURCE:
+  TYPE: "SynLiDAR"
+  d_domain: 'source'
+
+  data_config_file: 'dataset/configs/SynLiDAR2SemanticKITTI/annotations.yaml'
+  class_mapping: "map_2_semantickitti"
+  class_mapping_labels: "map_2_semantickitti_labels"
+
+  train_seq_list: ['00', '01', '02', '03', '04', '05', '06',
+                   '07', '08', '09', '10', '11', '12']
+  
+  valid_seq_list: ['03']
+
+  USE_INTENSITY: False # input feature with Intensity
+
+  VOXEL_SIZE: 0.05
+  IN_NUM_VOXELS: -1000 # 70000
+
+  DATASET_DIR: '~/dataset/SynLiDAR/sub_dataset'
+
+  use_aug_for_laserMix: True
+  USE_DGT: True  
+  DGT:
+    total_beams: 64
+
+    aug_shift_prob: -1.
+    aug_shift_range: 0.1
+    aug_data_prob: 0.
+
+    DENSITY: [34404.90337702, 21186.50640121,  7464.47998992, 3618.06023185,
+              1907.87081653,  1166.47878024,   758.06068548,  520.30176411,
+              365.83371976,   266.61421371]
+
+DATASET_TARGET:
+  TYPE: "SemanticKITTI"
+  d_domain: 'target'
+
+  data_config_file: 'dataset/configs/SynLiDAR2SemanticKITTI/semantic-kitti.yaml'
+  class_mapping: "learning_map"
+  class_mapping_labels: "labels"
+
+  train_seq_list: ['00', '01', '02', '03', '04', 
+                   '05', '06', '07', '09', '10']
+  
+  valid_seq_list: ['08']
+
+  USE_INTENSITY: False # input feature with Intensity
+  VOXEL_SIZE: 0.05
+  IN_NUM_VOXELS: -1000
+  DATASET_DIR: '~/dataset/semanticKITTI/dataset/sequences'
+  
+  use_aug_for_laserMix: False
+  USE_DGT: True  
+  DGT:
+    total_beams: 64
+
+    aug_shift_prob: 10. # > 1: do not use XY shift
+    aug_shift_range: 0.
+    aug_data_prob: 0. # > 1: do not use XY shift
+
+    DENSITY: [4.31564169e+04, 2.85721894e+04, 8.54752828e+03, 3.35904741e+03,
+              1.65797047e+03, 8.88407527e+02, 5.35081129e+02, 3.27988604e+02,
+              3.24453738e+00, 0.00000000e+00]
+
+DATALOADER:
+  NUM_WORKERS: 2
+  TRA_BATCH_SIZE: 2
+  VAL_BATCH_SIZE: 2
+
+DEBUG:
+  T_VAL_ITER: 5
+  S_VAL_ITER: 20
+  LOG_PERIOD: 1
+  PREHEAT_STEPS: 10
+  EXP_NAME: 'debug'
+  PROTO_UPDATE_PERIOD: 15
+  T_THRE_ZERO_ITER: 13
+  AUX_LOSS_START_ITER: 12
+
