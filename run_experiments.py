@@ -40,7 +40,7 @@ def parse_args():
     parser.add_argument(
         '--cfg',
         dest='config_file',
-        default='configs/SynLiDAR2SemanticKITTI/LaserMix.yaml',
+        default='configs/SynLiDAR2SemanticKITTI/CosMix.yaml',
         metavar='FILE',
         help='path to config file',
         type=str,
@@ -107,7 +107,8 @@ def main():
     # init network G and D
     net = MinkUNet34(cfg.MODEL_G).to(device)
     if cfg.OPTIMIZER.TYPE == "Adam":
-        G_optim = optim.Adam(net.parameters(), lr=cfg.OPTIMIZER.LEARNING_RATE_G)
+        G_optim = optim.Adam(net.parameters(), 
+                             lr=cfg.OPTIMIZER.LEARNING_RATE_G)
     elif cfg.OPTIMIZER.TYPE == "SGD":
         G_optim = optim.SGD(net.parameters(),
                             lr=cfg.OPTIMIZER.LEARNING_RATE_G,

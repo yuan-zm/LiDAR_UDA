@@ -1,0 +1,150 @@
+
+TRAIN:
+  TYPE: "train_parameters"
+  PROJECT_NAME: 'Syn2Sk_M34_SelfTraining'
+  
+  # for transfer learning
+  MAX_ITERS: 100000
+  MAX_EPOCHS: 100000
+
+  PREHEAT_STEPS: 5000
+  T_VAL_ITER: 4000
+  S_VAL_ITER: 4000
+  SAVE_MORE_ITER: False
+  SAVE_ITER: 80000
+  LOG_PERIOD: 50
+  PRETRAINPATH: 'preTraModel/Syn2SK/SynLiDAR2SK_M34_XYZ/2022-10-25-13_42/checkpoint_epoch_10.tar'
+  RESUMEPATH: None
+  
+  EXP_NAME: "0K_SoftDice_noSchelur_500Mt9e1_CosMix_10Ch_CE_M34_SGD1e3_ym" # 
+  STAGE: "CoSMix_Trainer"
+  GPU_ID: 0
+  DEBUG: False # False | True 
+  
+  use_softdice: True  # _softdice
+
+# keep the setting with cosmix-uda-main/configs/adaptation/synlidar2semantickitti_cosmix.yaml
+
+SOURCE_LOSS:
+  lambda_lov: 0. 
+
+TARGET_LOSS:
+
+MEAN_TEACHER:
+  TYPE: 'meanTeacher'
+  use_mt: True # Mt9e3
+  alpha_ema: 0.9
+  update_every: 500 # 0000000
+
+HYPERPARAMETER:
+  VOXEL_SIZE: 0.05
+
+#------ Network ------
+MODEL_G:
+  TYPE: "G"
+  MODEL_NAME: "MinkUNet34"
+  IN_CHANNELS: 3  # coords (xyz) and intensity
+  NUM_CLASSES: 20  # Number of valid classes
+
+PSEUDO_LABEL:
+  use_confidence: True # True | False #
+  threshold: 0.9
+  
+OPTIMIZER:
+  TYPE: "SGD"
+  LEARNING_RATE_G: 1.e-3 # max learning rate of G
+
+#------ dataset ------
+DATASET_SOURCE:
+  TYPE: "SynLiDAR"
+  d_domain: 'source'
+
+  CoSMix_sampling_weights: [0.0,                0.9880716592576068, 0.9988978052239658, 0.9972164211209391,
+                            0.9831448388154899, 0.9880607605139919, 0.9925271356305252, 0.994466724665657,
+                            0.9926987814893602, 0.6434590801767024, 0.997376788977194,  0.873259480291243,
+                            0.9949590570873872, 0.8056294097795189, 0.9709002379098092, 0.9120316818414879,
+                            0.9903562353053198, 0.8891687101963773, 0.9896537626065551, 0.9981214291108692]
+
+  data_config_file: 'dataset/configs/SynLiDAR2SemanticKITTI/annotations.yaml'
+  class_mapping: "map_2_semantickitti"
+  class_mapping_labels: "map_2_semantickitti_labels"
+
+  train_seq_list: ['00', '01', '02', '03', '04', '05', '06',
+                   '07', '08', '09', '10', '11', '12']
+  
+  valid_seq_list: ['03']
+
+  USE_INTENSITY: False # 输入是否使用Intensity
+  
+  VOXEL_SIZE: 0.05
+  IN_NUM_VOXELS: -1000 # 70000
+
+  DATASET_DIR: '~/dataset/SynLiDAR/sub_dataset'
+  
+  voxelSizeEnlargeSacles: [3]
+
+  use_aug_for_laserMix: False
+
+  USE_DGT: False  
+  # DGT:
+  #   total_beams: 64
+
+  #   # 这个应该放到 dataset_source, 但是为了方便写代码 放到了这里
+  #   aug_data_prob: 0.
+  #   aug_shift_prob: 0.5
+  #   aug_shift_range: 0.1
+
+  #   DENSITY: [17786.37731855, 10493.94143145,  3684.93543347,  1767.5733871,
+  #             911.37681452,   575.55272177,   364.83311492,   238.79269153,
+  #             171.72595766,   128.75640121]
+  
+DATASET_TARGET:
+  TYPE: "SemanticKITTI"
+  d_domain: 'target'
+
+  data_config_file: 'dataset/configs/SynLiDAR2SemanticKITTI/semantic-kitti.yaml'
+  class_mapping: 'learning_map'
+  class_mapping_labels: "labels"
+
+  train_seq_list: ['00', '01', '02', '03', '04', 
+                   '05', '06', '07', '09', '10']
+  
+  valid_seq_list: ['08']
+
+  USE_INTENSITY: False # 输入是否使用Intensity
+  VOXEL_SIZE: 0.05
+  IN_NUM_VOXELS: -1000
+  DATASET_DIR: '~/dataset/semanticKITTI/dataset/sequences'
+
+  voxelSizeEnlargeSacles: [3]
+
+  use_aug_for_laserMix: False
+
+  USE_DGT: False  
+  # DGT:
+  #   total_beams: 32
+
+  #   # 这个应该放到 dataset_source, 但是为了方便写代码 放到了这里
+  #   aug_shift_prob: 10. # > 1: do not use XY shift
+  #   aug_shift_range: 0.1
+  #   aug_data_prob: 10. # > 1: do not use XY shift
+
+  #   DENSITY: [11656.44283683,  5282.73046569,  2152.47166726,  1111.5349449,
+  #             621.73373622,    351.21048702,   191.19701386,    95.24884465,
+  #             46.48880199,     23.40298614]
+
+DATALOADER:
+  NUM_WORKERS: 2
+  TRA_BATCH_SIZE: 2
+  VAL_BATCH_SIZE: 4
+
+DEBUG:
+  T_VAL_ITER: 5
+  S_VAL_ITER: 20
+  LOG_PERIOD: 1
+  PREHEAT_STEPS: 10
+  EXP_NAME: 'debug'
+  PROTO_UPDATE_PERIOD: 15
+  T_THRE_ZERO_ITER: 13
+  AUX_LOSS_START_ITER: 12
+

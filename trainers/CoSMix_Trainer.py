@@ -12,8 +12,10 @@ import MinkowskiEngine as ME
 from network.lr_adjust import adjust_learning_rate
 from utils import common as com
 
-from domain_mix.cosMix import CoSMix
+from domain_mix.CoSMix import CoSMix
 from trainer_base import Base_Trainer
+
+from network.dice_loss import SoftDICELoss
 
 def my_worker_init_fn(worker_id):
     np.random.seed(np.random.get_state()[1][0] + worker_id)
@@ -43,6 +45,10 @@ class Trainer(Base_Trainer):
         
         self.cosMix = CoSMix(self.cfg)
         
+        if self.cfg.TRAIN.use_softdice:
+            self.criterion = SoftDICELoss(ignore_label=0)
+            print("Change to SoftDice Loss.")
+           
         print("Init CoSMix Trainer Done.")
         
     def train(self):
@@ -56,7 +62,10 @@ class Trainer(Base_Trainer):
             self.wb_dict = {}
             self.c_iter += 1
             start_t = time.time()
-            self.set_lr()
+            
+            # The original code of CoSMix do not use scheduler
+            # self.set_lr()
+
             self.set_zero_grad()
 
             # send data to GPU
