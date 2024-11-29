@@ -3,11 +3,15 @@
 
 This repo focuses on self-training-based methods for 3D outdoor driving scenario LiDAR point clouds UDA segmentation.
 
-Currently, this repo includes the implementation of [LaserMix](https://arxiv.org/abs/2207.00026) and [SAC-LM](https://openaccess.thecvf.com/content/CVPR2024/papers/Yuan_Density-guided_Translator_Boosts_Synthetic-to-Real_Unsupervised_Domain_Adaptive_Segmentation_of_3D_CVPR_2024_paper.pdf).
+Currently, this repo includes the implementation of [LaserMix](https://arxiv.org/abs/2207.00026), [SAC-LM](https://openaccess.thecvf.com/content/CVPR2024/papers/Yuan_Density-guided_Translator_Boosts_Synthetic-to-Real_Unsupervised_Domain_Adaptive_Segmentation_of_3D_CVPR_2024_paper.pdf) and [CoSMix](https://arxiv.org/abs/2207.09778).
+
+## Updates
+
+- \[2024.12\] - Added support for the CoSMix.
 
 ## TODO List
-- [ ] Implementation of CoSMix
-- [ ] Upload tranied models
+- [x] Implementation of CoSMix
+- [x] Upload tranied models
 - [x] Implementation of SAC-LM
 - [x] Implementation of LaserMix
 
@@ -146,6 +150,21 @@ We release the checkpoints of SynLiDAR -> SemanticKITTI and SynLiDAR -> Semantic
 
 [Google](https://drive.google.com/drive/folders/1EuxDphixI579hBgiOQFoVz5KlVwHllkP?usp=sharing)
 
+### Evaluation Results on SemanticKITTI
+
+| Method | mIoU | car | bicycle | motorcycle | truck | other-vehicle | person | bicyclist | motorcyclist | road | parking | sidewalk | other-ground | building | fence | vegetation | trunk | terrain | pole | traffic-sign |
+|-------- |-----|-----|----------|------------|-------|---------------|--------|-----------|--------------|------|---------|-----------|--------------|-----------|-------|------------|--------|----------|------|--------------|
+| [CoSMix](https://drive.google.com/drive/folders/1LunRRxN2mrVJXfRPHYsLkkY_2uZ8hFyI) | 30.1 | 79.3 | 7.4 | 8.5 | 7.9 | 14.1 | 23.2 | 31.5 | 1.6 | 63.7 | 11.3 | 38.3 | 0.3 | 63.7 | 13.5 | 73.6 | 47.5 | 20.3 | 43.8 | 22.1 |
+| [LaserMix](https://drive.google.com/drive/folders/1IgWmfU3UtMo9hN8jS1FNbQzo42vQWt53) | 36.0 | 86.7 | 9.3 | 33.3 | 3.0 | 3.4 | 40.3 | 57.2 | 5.0 | 75.9 | 11.5 | 54.0 | 0.0 | 60.4 | 8.6 | 77.3 | 45.9 | 49.2 | 44.6 | 17.5 |
+| [SAC-LM](https://drive.google.com/drive/folders/12RN3Os0WMLyJMLfqUsWAsyfd_DxUhFh4) | 43.1 | 92.9 | 17.3 | 43.4 | 15.0 | 6.1 | 49.2 | 54.2 | 4.2 | 86.4 | 19.1 | 62.3 | 0.0 | 78.2 | 9.2 | 83.3 | 56.0 | 59.1 | 51.2 | 32.3 |
+
+### Evaluation Results on SemanticPOSS
+
+| Method | mIoU | rider | car | trunk | plant | traffic-sign | pole | trashcan | building | cone_stone | fence | bike | ground | person |
+|--------|------|-------|-----|-------|-------|--------------|------|-----------|-----------|------------|-------|------|---------|---------|
+| [CosMix](https://drive.google.com/drive/folders/1xVr9Iw0KmU5_yBxPNy-7Np5tHkzzXt1I) | 44.4 | 42.1 | 34.0 | 45.2 | 63.9 | 39.9 | 35.6 | 2.3 | 67.4 | 18.8 | 42.9 | 44.4 | 79.5 | 61.6 |
+| [LaserMix](https://drive.google.com/drive/folders/1w6_DYW3v9nKd8LdoWUoLhiu3wyLmZK74) | 46.0 | 58.1 | 59.8 | 48.8 | 69.0 | 23.6 | 38.7 | 32.6 | 59.5 | 14.8 | 42.7 | 9.0 | 79.4 | 61.9 |
+| [SAC-LM](https://drive.google.com/drive/folders/1S0Gt8PI7YRjfyzpanF1lmrfzay-tAljI) | 50.8 | 55.1 | 70.7 | 46.1 | 74.2 | 30.1 | 36.3 | 44.1 | 81.0 | 4.3 | 62.8 | 10.3 | 78.5 | 67.2 |
 
 ## Acknowledgement
 Thanks for the following works for their awesome codebase.

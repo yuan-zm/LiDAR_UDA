@@ -16,9 +16,9 @@ TRAIN:
   PRETRAINPATH: 'preTraModel/Syn2SK/SynLiDAR2SK_M34_XYZ/2022-10-25-13_42/checkpoint_epoch_10.tar'
   RESUMEPATH: None
   
-  EXP_NAME: "0K_SoftDice_noSchelur_500Mt9e1_CosMix_10Ch_CE_M34_SGD1e3_ym" # 
+  EXP_NAME: "3K_SoftDice_noSchelur_500Mt9e1_CosMix_10Ch_CE_M34_SGD1e3_ym" # 
   STAGE: "CoSMix_Trainer"
-  GPU_ID: 0
+  GPU_ID: 3
   DEBUG: False # False | True 
   
   use_softdice: True  # _softdice
